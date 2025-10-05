@@ -1,0 +1,7 @@
+Fix Telegram bot not responding by correcting asynchronous functions
+
+Converts several asynchronous functions (like start, button, and message_handler) to synchronous ones, resolving the Telegram bot's unresponsiveness.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: 208fc16e-4d15-45fe-be43-ee43e1baefc1
+Replit-Commit-Checkpoint-Type: full_checkpoint
