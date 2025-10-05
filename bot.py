@@ -2,6 +2,7 @@ from flask import Flask, request
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, Bot
 from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler, CallbackContext
 import os
+import imghdr  # Импортируем явным образом, чтобы избежать ошибок на Python 3.11+
 
 # --- Словарь для хранения очков теста ---
 user_scores = {}
@@ -9,7 +10,7 @@ user_scores = {}
 # --- Токен из Secrets Replit ---
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 bot = Bot(token=TOKEN)
-dp = Dispatcher(bot, None)
+dp = Dispatcher(bot, None, workers=0)  # workers=0 для синхронной обработки
 
 app = Flask(__name__)
 
@@ -36,7 +37,6 @@ def button(update: Update, context: CallbackContext):
     query.answer()
     user_id = query.from_user.id
 
-    # --- Главное меню ---
     if query.data == 'tips':
         keyboard = [
             [InlineKeyboardButton("Как не попасться на уловки", callback_data='tricks')],
@@ -67,7 +67,6 @@ def button(update: Update, context: CallbackContext):
             "Можно изучать советы, проходить тесты и получать полезные ссылки."
         )
 
-    # --- Подменю Советы ---
     elif query.data == 'tricks':
         keyboard = [[InlineKeyboardButton("Назад", callback_data='tips')]]
         query.edit_message_text(
@@ -84,7 +83,6 @@ def button(update: Update, context: CallbackContext):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-    # --- Тест с вопросами ---
     elif query.data.startswith('q'):
         questions = {
             'q1': {'text': "Можно ли доверять незнакомому человеку, который обещает быстро заработать?", 'yes': False},
